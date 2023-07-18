@@ -17,57 +17,61 @@ class TopicsController extends Controller
 {
     public function index(): BaseView
     {
-        $topics = Topic::join('classrooms' ,'classroom_id', '=' , 'topics.classroom_id')
-        ->select([
-            'topics.*',
-            'classrooms.name as category_name',
-        ])->paginate();
-        return view('topics.index',[
+        $topics = Topic::join('classrooms', 'topics.classroom_id', '=', 'classrooms.id')
+            ->select([
+                'topics.*',
+                'classrooms.name as classroom_name',
+            ])->paginate();
+            $success = session('success');
+        return view('topics.index', [
             'topics' => $topics,
+            'success' => $success,
         ]);
     }
 
     public function create()
     {
         $classrooms = Classroom::all();
-        return view('topics.create',[
+        return view('topics.create', [
             'classrooms' => $classrooms,
-        ]);
+        ])
+        ->with('success', 'Topic Created ');
+        
     }
 
     public function store(Request $request)
     {
-        $topic= Topic::create($request->all());
-        return redirect()->route('topics.index');
+        $topic = Topic::create($request->all());
+        return redirect(route('topics.index'))
+        ->with( 'success', 'Topic Created' );
     }
 
     public function show($id)
     {
-        $topics = Topic::join('classrooms' ,'classrooms.id', '=' , 'topics.classroom_id')
-        ->select([
-            'topics.*',
-            'classrooms.name as classroom_name',
-           
-        ])->where('topics.id', $id)
-        ->first(); 
-            return view('topics.show',[
+        $topics = Topic::join('classrooms', 'classrooms.id', '=', 'topics.classroom_id')
+            ->select([
+                'topics.*',
+                'classrooms.name as classroom_name',
+
+            ])->where('topics.id', $id)
+            ->first();
+        return view('topics.show', [
             'topic' => $topics,
         ]);
-
     }
 
     public function edit($id)
     {
-        $topic = Topic::join('classrooms' ,'classrooms.id', '=' , 'topics.classroom_id')
-        ->select([
-            'topics.*',
-            'classrooms.name as classroom_name',
-           
-        ])->where('topics.id', $id)
-        ->first(); 
-                return view('topics.edit',[
+        $topic = Topic::join('classrooms', 'classrooms.id', '=', 'topics.classroom_id')
+            ->select([
+                'topics.*',
+                'classrooms.name as classroom_name',
+
+            ])->where('topics.id', $id)
+            ->first();
+        return view('topics.edit', [
             'classrooms' => Classroom::all(),
-            'topic' =>$topic
+            'topic' => $topic
         ]);
     }
 
@@ -75,13 +79,17 @@ class TopicsController extends Controller
     {
         $topic = Topic::findOrFail($id);
         $topic->update($request->all());
-        return redirect()->route('topics.index');
-
+        return redirect()->route('topics.index')
+        ->with('success', 'Topic updated');
+        
     }
 
     public function destroy($id)
     {
         Topic::destroy($id);
-    }
+        return redirect(route('topics.index'))
+        ->with('success', 'Topic deleted');
+        
 
+    }
 }

@@ -7,30 +7,14 @@
 {{-- <p> Welcome {{ $name }} , {{ $title  }} </p>
     <a href="{{ route('classrooms.show',['edit' => 1 ,'id' => 56], false)}}" >Create</a>
     <a href="{{ route(name: 'classrooms.create', absolute:false)}}" >Create</a> --}}
-@if(session()->has('success'))
-    
-<div class="alert alert-success">{{ $success }}</div>
-@endif
+<x-form.alert name="success"></x-form.alert>
+{{-- <x-alert name="success" /> --}}
     <div class="row">
     
     @foreach ($classrooms as $classroom)
         {{-- حجزنا 3 اعمدة * 4صفوف يعني 12   --}}
         <div class="col-md-3">
-            <div class="card" >
-                <img class="card-img-top" src="uploads/{{ $classroom->cover_image_path }}" alt>
-                <div class="card-body">
-                    <h5 class="card-title"> {{ $classroom->name }}</h5>
-                    <p class="card-text"> {{ $classroom->section }}- {{ $classroom->room }}</p>
-                    <a href="{{ route('classrooms.show', $classroom->id) }}" class="btn btn-sm btn-primary">View</a>
-                    <a href="{{ route('classrooms.edit', $classroom->id) }}" class="btn btn-sm btn-dark">Edit</a>
-                    <form action="{{ route('classrooms.destroy' , $classroom->id)}}" method="post">
-                        @csrf
-                        @method('delete')
-                        <button type="submit" class="btn btn-sm btn-danger ">Delete</button>
-                    </form>
-                    
-                </div>
-            </div>
+           <x-form.card :classroom="$classroom"></x-form.card>
         </div>
     @endforeach
 </div>
