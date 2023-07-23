@@ -1,7 +1,9 @@
+
 <?php
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClassroomsController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\TopicsController;
 /*
 |--------------------------------------------------------------------------
@@ -12,18 +14,20 @@ use App\Http\Controllers\TopicsController;
 | routes are loaded by the RouteServiceProvider and all of them will
 | be assigned to the "web" middleware group. Make something great!
 |
-*/
+*/ 
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+;
 Route::get('/classroom', [ClassroomsController::class ,'index'])
-->name('calssrooms.index');
+->name('calssrooms.index')->middleware('auth');
 Route::get('/classrooms/create',[ClassroomsController::class ,'create'])
 ->name('calssrooms.create');
 Route::post('/classrooms',[ClassroomsController::class ,'store'])
 ->name('calssrooms.store');
-//Route::get('/classrooms/create',[ClassroomsController::class ,'index']);رح يرجع التاني لو كانوا نفس الميثود والبث 
+//Route::get('/classrooms/create',[ClassroomsController::class ,'index']);رح يرجع التاني لو كانوا نفس الميثود والباث 
   
 Route::get('/classrooms/{id}/edit',[ClassroomsController::class ,'edit'])
 ->name('classrooms.edit');
@@ -64,3 +68,19 @@ Route::delete('/classrooms/{id}',[ClassroomsController::class ,'destroy'])
 // ]);
 Route::resource('/topics', TopicsController::class);
 //عنا بتفرتض انه اسم الباراميتر هو المفرد من الكلاس
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');  
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';
