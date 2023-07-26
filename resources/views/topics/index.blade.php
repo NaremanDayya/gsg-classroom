@@ -7,8 +7,8 @@
 @endpush
 
 {{-- <p> Welcome {{ $name }} , {{ $title  }} </p>
-    <a href="{{ route('topics.show',['edit' => 1 ,'id' => 56], false)}}" >Create</a>
-    <a href="{{ route(name: 'topics.create', absolute:false)}}" >Create</a> --}}
+    <a href="{{ route('classroom.topic.show',['edit' => 1 ,'id' => 56], false)}}" >Create</a>
+    <a href="{{ route(name: 'classroom.topic.create', absolute:false)}}" >Create</a> --}}
 @section('content')
 @if(session()->has('success'))
     
@@ -26,13 +26,13 @@
              ">
                 <div class="row">
                     <div class="col">
-                        <a href="{{ route('topics.show', $topic->id) }}" class="btn btn-sm btn-primary">View</a>
+                        <a href="{{ route('classroom.topic.show',['classroom'=>$classroom,'topic'=>$topic->id]) }}" class="btn btn-sm btn-primary">View</a>
                     </div>
                     <div class="col">
-                        <a href="{{ route('topics.edit', $topic->id) }}" class="btn btn-sm btn-dark">Edit</a>
+                        <a href="{{ route('classroom.topic.edit', ['classroom'=>$classroom,'topic'=>$topic->id]) }}" class="btn btn-sm btn-dark">Edit</a>
                     </div>
                     <div class="col">
-                        <form action="{{ route('topics.destroy', $topic->id) }}" method="post">
+                        <form action="{{ route('classroom.topic.destroy', ['classroom'=>$classroom,'topic'=>$topic->id]) }}" method="post">
                             @csrf
                             @method('delete')
                             <button type="submit" class="btn btn-sm btn-danger">Delete</button>

@@ -8,6 +8,7 @@ use App\Models\Classroom;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
@@ -21,7 +22,13 @@ class ClassroomsController extends Controller
     public function index(Request $requset): BaseView
     {
 
-        $classrooms = Classroom::orderBy('name', 'DESC')->get();
+        $classrooms = Classroom::active()
+        ->recent()
+        ->orderBy('created_at','DESC')
+        ->where('user_id',Auth::id())
+        // ->withoutGlobalScopes()//بتلغي تطيق كل الجلوبال بما فيهم الsoft delete
+        //->withoutGlobalScope('user')//بنلغي واحد محدد
+        ->get();
         // $classroom = Classroom::orderBy('name','DESC')->first();
         // session()->get('success');//ممكن يكون null
         // session()->has('success');
@@ -98,6 +105,10 @@ class ClassroomsController extends Controller
         // ]);
         // $classroom =Classroom::create($request->all());
         $validated['code'] = Str::random(8);
+        $validated['user_id'] = Auth::id();
+        // $validated['user_id'] = Auth::user()->id;
+
+        // $validated['user_id'] = $request->user()->id();
         // $validated['cover_image_path'] =  $path;
         $classroom = Classroom::create($validated);
         return redirect()->route('calssrooms.index')
@@ -118,6 +129,7 @@ class ClassroomsController extends Controller
     public function show($id)
     {
         // $classrooom =Classroom::where('id' , '=' , $id)->first();
+        // $classroom = Classroom::where('user_id',Auth::id())->findOrFail($id);//رح عمل سكوب جلوبال لكل المودل بشكل عام بيتنفذ على كل الاكشنز وخلص
         $classroom = Classroom::findOrFail($id);
         return View::make('classrooms.show')
             ->with([
@@ -218,14 +230,44 @@ class ClassroomsController extends Controller
         // $classroom->destroy($id);
         $classroom = Classroom::findOrFail($id);
         $classroom->delete();
-        if ($classroom->cover_image_path) {     // Storage::disk(Classroom::$disk)->delete($classroom->cover_image_path);
-            Classroom::deleteCoverImage($classroom->cover_image_path);
-            //Flash Message
-        }
+        // if ($classroom->cover_image_path) {     // Storage::disk(Classroom::$disk)->delete($classroom->cover_image_path);
+        //     Classroom::deleteCoverImage($classroom->cover_image_path);
+        //     //Flash Message
+        // }
         return redirect(route('calssrooms.index'))
             ->with('success', 'your classroom deleted successfully');
         // Classroom::where('id','=',$id)->delete();
         // $classroom = Classroom::find($id);
         // $classroom->delete();
+    }
+
+    public function trashed()
+    {
+        $classrooms = Classroom::onlyTrashed()
+            ->latest('deleted_at')
+            ->get();
+        return view('classrooms.trashed', compact('classrooms'));
+        // $classroom = Classroom::onlyTrashed()->latest('deleted_at')->get();
+        // return view('classrooms.trashed' ,compact('classrooms'));
+    }
+
+    public function restore($id)
+    {
+        // $classroom = Classroom::findOrFail($id);//هان رح يبحث عنه داخل الموجود بس مش عالمحدوف فلازم نحددله وين يبحث
+        $classrooms = Classroom::onlyTrashed()->findOrFail($id);
+        $classrooms->restore();//بترجع حقل الحدف ل null
+        return redirect(route('calssrooms.index'))
+            ->with('success', 'Classroom ({$classrooms->name}) restored');
+    }
+
+    public function forceDelete($id)
+    {
+        $classrooms = Classroom::withTrashed()->findOrFail($id);
+        $classrooms->forceDelete();
+        if ($classrooms->cover_image_path) {     // Storage::disk(Classroom::$disk)->delete($classroom->cover_image_path);
+          Classroom::deleteCoverImage($classrooms->cover_image_path);
+         }
+        return redirect(route('calssrooms.trashed'))
+        ->with('success', 'Classroom ({$classroom->name}) restored');
     }
 }

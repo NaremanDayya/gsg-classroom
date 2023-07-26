@@ -4,6 +4,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClassroomsController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TopicsController;
 /*
 |--------------------------------------------------------------------------
@@ -19,10 +20,35 @@ use App\Http\Controllers\TopicsController;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::prefix('/topics/trashed')
+->as('topics.')
+->controller(TopicsController::class)
+->group(function(){
+    Route::get('/','trashed')
+->name('trashed');
+Route::put('/{topic}','restore')
+->name('restore');
+Route::delete('/{topic}','forceDelete')
+->name('force-delete');
+})->middleware('auth');
+Route::middleware(['auth'])->group(function () {
+    
+Route::prefix('/classrooms/trashed')
+->as('classrooms.')
+->controller(ClassroomsController::class)
+->group(function(){
+    Route::get('/','trashed')
+->name('trashed');
+Route::put('/{classroom}','restore')
+->name('restore');
+Route::delete('/{classroom}','forceDelete')
+->name('force-delete');
+});
 
-;
+
+
 Route::get('/classroom', [ClassroomsController::class ,'index'])
-->name('calssrooms.index')->middleware('auth');
+->name('calssrooms.index');
 Route::get('/classrooms/create',[ClassroomsController::class ,'create'])
 ->name('calssrooms.create');
 Route::post('/classrooms',[ClassroomsController::class ,'store'])
@@ -45,30 +71,10 @@ Route::delete('/classrooms/{id}',[ClassroomsController::class ,'destroy'])
 // ->where('id','[0-9]+');//digit or more
 //->where('id','.+');//any character
 
-// Route::get('/topics', [TopicsController::class ,'index'])
-// ->name('topics.index');
-// Route::get('/topics/create',[TopicsController::class ,'create'])
-// ->name('topics.create');
-// Route::post('/topics',[TopicsController::class ,'store'])
-// ->name('topics.store');  
-// Route::get('/topics/{id}/edit',[TopicsController::class ,'edit'])
-// ->name('topics.edit');
-// Route::get('/topics/{id}',[TopicsController::class ,'show'])
-// ->name('topics.show')
-// ->where('id','\d+');
-// Route::put('/topics/{id}',[TopicsController::class ,'update'])
-// ->name('topics.update')
-// ->where('id','\d+');
-// Route::delete('/topics/{id}',[TopicsController::class ,'destroy'])
-// ->name('topics.destroy')
-// ->where('id','\d+');
-// Route::resource('/classrooms', ClassroomsController::class)
-// ->names([
-// 'index'=> 'classrooms/index',
-// ]);
-Route::resource('/topics', TopicsController::class);
-//عنا بتفرتض انه اسم الباراميتر هو المفرد من الكلاس
 
+Route::resource('classroom.topic', TopicsController::class);
+//عنا بتفرتض انه اسم الباراميتر هو المفرد من الكلاس
+});
 Route::get('/', function () {
     return view('welcome');
 });

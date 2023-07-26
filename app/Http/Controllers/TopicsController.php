@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Classroom;
 use App\Models\Topic;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,62 +14,60 @@ use Illuminate\Support\Str;
 
 class TopicsController extends Controller
 {
-    public function index(): BaseView
+    public function index($classroom): BaseView
     {
-        $topics = Topic::join('classrooms', 'topics.classroom_id', '=', 'classrooms.id')
-            ->select([
-                'topics.*',
-                'classrooms.name as classroom_name',
-            ])->paginate();
+         $topics =Topic::where('classroom_id', '=', $classroom)->get();
+        // Topic::join('classrooms', 'topics.topic_id', '=', 'topics.id')
+        //     ->select([
+        //         'topics.*',
+        //         'topics.name as topic_name',
+        //     ])->paginate();
             $success = session('success');
         return view('topics.index', [
             'topics' => $topics,
             'success' => $success,
+            'classroom' => $classroom,
         ]);
     }
 
-    public function create()
+    public function create($classroom)
     {
-        $classrooms = Classroom::all();
+        $topics = Topic::all();
         return view('topics.create', [
-            'classrooms' => $classrooms,
+            'topics' => $topics,
+            'classroom' => $classroom
         ])
         ->with('success', 'Topic Created ');
         
     }
 
-    public function store(Request $request)
+    public function store(Request $request,$classroom)
     {
-        $topic = Topic::create($request->all());
-        return redirect(route('topics.index'))
+        $request['classroom_id'] = $classroom;
+        $topics = Topic::create($request->all());
+        return redirect(route('classroom.topic.index',$classroom))
         ->with( 'success', 'Topic Created' );
     }
 
-    public function show($id)
+    public function show($classroom ,$topic)
     {
-        $topics = Topic::join('classrooms', 'classrooms.id', '=', 'topics.classroom_id')
-            ->select([
-                'topics.*',
-                'classrooms.name as classroom_name',
-
-            ])->where('topics.id', $id)
-            ->first();
+        $topic = Topic::where('classroom_id', $classroom)->findOrFail($topic);
         return view('topics.show', [
-            'topic' => $topics,
+            'topic' => $topic,
         ]);
     }
 
     public function edit($id)
     {
-        $topic = Topic::join('classrooms', 'classrooms.id', '=', 'topics.classroom_id')
+        $topic = Topic::join('topics', 'topics.id', '=', 'topics.topic_id')
             ->select([
                 'topics.*',
-                'classrooms.name as classroom_name',
+                'topics.name as topic_name',
 
             ])->where('topics.id', $id)
             ->first();
         return view('topics.edit', [
-            'classrooms' => Classroom::all(),
+            'topics' => Topic::all(),
             'topic' => $topic
         ]);
     }
@@ -79,17 +76,41 @@ class TopicsController extends Controller
     {
         $topic = Topic::findOrFail($id);
         $topic->update($request->all());
-        return redirect()->route('topics.index')
+        return redirect()->route('classroom.topic.index')
         ->with('success', 'Topic updated');
         
     }
 
-    public function destroy($id)
+    public function destroy($id,$classroom)
     {
+        $topic =Topic::where('classroom_id', '=', $classroom)->get();
         Topic::destroy($id);
-        return redirect(route('topics.index'))
+        return redirect(route('classroom.topic.index',['classroom'=>$classroom,'topic'=>$topic]))
         ->with('success', 'Topic deleted');
         
 
+    }
+    public function trashed($classroom)
+    {
+        $topics = Topic::where('classroom_id', $classroom)->onlyTrashed()->get();
+        return view('topics.trashed' ,compact('topics'));
+    }
+
+    public function restore($id)
+    {
+        // $topic = Topic::findOrFail($id);//هان رح يبحث عنه داخل الموجود بس مش عالمحدوف فلازم نحددله وين يبحث
+        $topics = Topic::onlyTrashed()->findOrFail($id);
+        $topics->restore();//بترجع حقل الحدف ل null
+        return redirect(route('classroom.topic.index'))
+            ->with('success', 'Topic ({$topic->name}) restored');
+    }
+
+    public function forceDelete($id)
+    {
+        $topic = Topic::withTrashed()->findOrFail($id);
+        $topic->forceDelete();
+
+        return redirect(route('topics.trashed'))
+        ->with('success', 'Topic ({$topic->name}) restored');
     }
 }
