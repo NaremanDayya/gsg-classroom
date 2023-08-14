@@ -3,9 +3,13 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClassroomsController;
+use App\Http\Controllers\JoinClassroomController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TopicsController;
+use App\Http\Controllers\ClassworkController;
+use App\Http\Controllers\ClassroomPeopleController;
+use App\Http\Controllers\CommentsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,7 +24,7 @@ use App\Http\Controllers\TopicsController;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::prefix('/topics/trashed')
+Route::prefix('classroom/{classroom}/topics/trashed')
 ->as('topics.')
 ->controller(TopicsController::class)
 ->group(function(){
@@ -41,18 +45,28 @@ Route::prefix('/classrooms/trashed')
 ->name('trashed');
 Route::put('/{classroom}','restore')
 ->name('restore');
-Route::delete('/{classroom}','forceDelete')
+Route::delete('/{classroom}','forceDelete') 
 ->name('force-delete');
 });
+Route::resource('classroom.classwork', ClassworkController::class);
+// ->shallow();
+//shallow-> بتخلي راوت destroy,update,edit,show بدون ما يمرر كلاس رووم باراميتر
+Route::get('/classrooms/{classroom}/join',[JoinClassroomController::class ,'create'])
+->middleware('signed')
+->name('classrooms.join');
 
-
+Route::post('/classrooms/{classroom}/join',[JoinClassroomController::class ,'store']);
+Route::get('/classrooms/{classroom}/people',[ClassroomPeopleController::class,'index'] )
+->name('classrooms.people');//invokable Controller
+Route::delete('/classrooms/{classroom}/people',[ClassroomPeopleController::class,'destroy'] )
+->name('classrooms.people.destroy');
 
 Route::get('/classroom', [ClassroomsController::class ,'index'])
-->name('calssrooms.index');
+->name('classrooms.index');
 Route::get('/classrooms/create',[ClassroomsController::class ,'create'])
-->name('calssrooms.create');
+->name('classrooms.create');
 Route::post('/classrooms',[ClassroomsController::class ,'store'])
-->name('calssrooms.store');
+->name('classrooms.store');
 //Route::get('/classrooms/create',[ClassroomsController::class ,'index']);رح يرجع التاني لو كانوا نفس الميثود والباث 
   
 Route::get('/classrooms/{id}/edit',[ClassroomsController::class ,'edit'])
@@ -71,13 +85,16 @@ Route::delete('/classrooms/{id}',[ClassroomsController::class ,'destroy'])
 // ->where('id','[0-9]+');//digit or more
 //->where('id','.+');//any character
 
+Route::post('comments',[CommentsController::class ,'store'])
+->name('comments.store');
 
 Route::resource('classroom.topic', TopicsController::class);
-//عنا بتفرتض انه اسم الباراميتر هو المفرد من الكلاس
 });
 Route::get('/', function () {
     return view('welcome');
 });
+
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');

@@ -4,14 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ClassroomRequest;
 use App\Models\Classroom;
+use Exception;
+use Illuminate\Database\QueryException;
 // use App\Test;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\View\View as BaseView;
 use Illuminate\Support\Str;
@@ -23,12 +27,13 @@ class ClassroomsController extends Controller
     {
 
         $classrooms = Classroom::active()
-        ->recent()
-        ->orderBy('created_at','DESC')
-        ->where('user_id',Auth::id())
-        // ->withoutGlobalScopes()//بتلغي تطيق كل الجلوبال بما فيهم الsoft delete
-        //->withoutGlobalScope('user')//بنلغي واحد محدد
-        ->get();
+            ->recent()
+            ->orderBy('created_at', 'DESC')
+            ->filter(request(['search']))
+            ->where('user_id', Auth::id())
+            // ->withoutGlobalScopes()//بتلغي تطيق كل الجلوبال بما فيهم الsoft delete
+            //->withoutGlobalScope('user')//بنلغي واحد محدد
+            ->simplePaginate(2);
         // $classroom = Classroom::orderBy('name','DESC')->first();
         // session()->get('success');//ممكن يكون null
         // session()->has('success');
@@ -104,14 +109,46 @@ class ClassroomsController extends Controller
         //     'code' => Str::random(8),
         // ]);
         // $classroom =Classroom::create($request->all());
-        $validated['code'] = Str::random(8);
-        $validated['user_id'] = Auth::id();
+        // $validated['code'] = Str::random(8);
+        // $validated['user_id'] = Auth::id();
         // $validated['user_id'] = Auth::user()->id;
+        // DB::beginTransaction();
 
         // $validated['user_id'] = $request->user()->id();
         // $validated['cover_image_path'] =  $path;
+         try{
+        DB::beginTransaction();
+        //بتعمل return back لحالها
+        // DB::transaction(function() use ($validated){
+        //     $classroom = Classroom::create($validated);
+        // DB::table('classroom_user')->insert([
+        //     'classroom_id' => $classroom->id,
+        //     'user_id' => Auth::id(),
+        //     'role' => 'teacher',
+        //     'created_at' => now(),
+        // ]);
+        // });
+
         $classroom = Classroom::create($validated);
-        return redirect()->route('calssrooms.index')
+        // DB::table('classroom_user')->insert([
+            //     'classroom_id' => $classroom->id,
+            //     'user_id' => Auth::id(),
+            //     'role' => 'teacher',
+            //     'created_at' => now(),
+            // ]);
+        $classroom->join(Auth::id(),'teacher');
+
+                 DB::commit();
+            }catch(QueryException $e){
+            DB::rollBack();
+            return back()
+            ->withErrors('error' ,$e->getMessage())
+            ->withInput();
+        }
+
+
+
+        return redirect()->route('classrooms.index')
             ->with('success', 'your classroom created successfully');
 
 
@@ -131,9 +168,14 @@ class ClassroomsController extends Controller
         // $classrooom =Classroom::where('id' , '=' , $id)->first();
         // $classroom = Classroom::where('user_id',Auth::id())->findOrFail($id);//رح عمل سكوب جلوبال لكل المودل بشكل عام بيتنفذ على كل الاكشنز وخلص
         $classroom = Classroom::findOrFail($id);
+        // $invitation_link = URL::signedRoute('classrooms.join',[
+        //     'classroom' => $id ,
+        //     'code' => $classroom->code ,
+        // ]);
         return View::make('classrooms.show')
             ->with([
                 'classroom' => $classroom,
+                // 'invitation_link' => $invitation_link,
             ]);
         // return view('classrooms.show',[
         //     'id' => $id,
@@ -222,7 +264,7 @@ class ClassroomsController extends Controller
         //mass Assignment
         //   $classroom->fill($request->all())->save();
         Session::flash('success', 'your classroom updated successfully');
-        return Redirect::route('calssrooms.index');
+        return Redirect::route('classrooms.index');
     }
 
     public function destroy($id)
@@ -255,7 +297,7 @@ class ClassroomsController extends Controller
     {
         // $classroom = Classroom::findOrFail($id);//هان رح يبحث عنه داخل الموجود بس مش عالمحدوف فلازم نحددله وين يبحث
         $classrooms = Classroom::onlyTrashed()->findOrFail($id);
-        $classrooms->restore();//بترجع حقل الحدف ل null
+        $classrooms->restore(); //بترجع حقل الحدف ل null
         return redirect(route('calssrooms.index'))
             ->with('success', 'Classroom ({$classrooms->name}) restored');
     }
@@ -264,10 +306,10 @@ class ClassroomsController extends Controller
     {
         $classrooms = Classroom::withTrashed()->findOrFail($id);
         $classrooms->forceDelete();
-        if ($classrooms->cover_image_path) {     // Storage::disk(Classroom::$disk)->delete($classroom->cover_image_path);
-          Classroom::deleteCoverImage($classrooms->cover_image_path);
-         }
+        // if ($classrooms->cover_image_path) {     // Storage::disk(Classroom::$disk)->delete($classroom->cover_image_path);
+        //     Classroom::deleteCoverImage($classrooms->cover_image_path);
+        // }
         return redirect(route('calssrooms.trashed'))
-        ->with('success', 'Classroom ({$classroom->name}) restored');
+            ->with('success', 'Classroom ({$classroom->name}) restored');
     }
 }

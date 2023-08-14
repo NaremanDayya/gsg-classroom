@@ -19,11 +19,10 @@
 
             <div class="alert alert-light border-success" role="alert">
                 <h4 class="alert-heading">{{ $topic->name }}</h4>
-                <p>Topic of {{ $topic->classroom_name }}</p>
+                <p>Topic of {{ $classroom->name }}</p>
                 <hr style="height: 2px;
                 background-color: #ff0000; /* Set your desired color */
-                background-image: linear-gradient(to right, #ff0000, #00ff00); /* Set your desired gradient */
-             ">
+                background-image: linear-gradient(to right, #ff0000, #00ff00); /* Set your desired gradient */>
                 <div class="row">
                     <div class="col">
                         <a href="{{ route('classroom.topic.show',['classroom'=>$classroom,'topic'=>$topic->id]) }}" class="btn btn-sm btn-primary">View</a>
@@ -43,7 +42,7 @@
 
         </div>
     @endforeach
-    </div>
+    
 @endsection
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"

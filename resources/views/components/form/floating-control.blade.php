@@ -2,5 +2,5 @@
     {{-- عشان نظهر المحتوى --}}
     {{ $slot }}
     {{ $label }}
-    {{-- <label for="{{ $name }}">{{ $placeholder }}</label> --}}
+    <x-form.input-error name="{{ $name }}" />
 </div>

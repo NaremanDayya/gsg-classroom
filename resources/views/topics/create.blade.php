@@ -9,12 +9,12 @@
             </div>
             <div class="form-floating mb-3">
                 <label for="topic_id"></label>
-                <select name="topic_id" id="topic_id" class="form-control">
+                {{-- <select name="topic_id" id="topic_id" class="form-control">
                     <option value=""></option>
                     @foreach ($topics as $topic )
                     <option value="{{ $topic->id }}">{{ $topic->name }}</option>
                     @endforeach
-                </select>
+                </select> --}}
             </div>
            
             <button type="submit" class="btn btn-primary">Create Topic</button>

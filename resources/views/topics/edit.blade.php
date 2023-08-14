@@ -1,7 +1,7 @@
 @include('partials.header');
 <div class="container">
     <h1> Edit topicss</h1>
-    <form action="{{ route('topics.update', $topic->id) }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('classroom.topic.update', $topic->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="form-floating mb-3">
@@ -9,7 +9,7 @@
                 placeholder="Class Name">
             <label for="name"> Topic Name</label>
         </div>
-        <div class="form-floating mb-3">
+        {{-- <div class="form-floating mb-3">
             <select name="classroom_id" id="classroom_id" class="form-control">
                 <option value="{{ $topic->classroom_id }}">{{ $topic->classroom_name }}</option>
                 @foreach ($classrooms as $classroom)
@@ -18,7 +18,7 @@
                     @endif
                 @endforeach
             </select>
-        </div>
+        </div> --}}
 
         <button type="submit" class="btn btn-primary">Update Topics</button>
     </form>

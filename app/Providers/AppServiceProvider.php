@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Classwork;
+use App\Models\Post;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -22,6 +26,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Paginator::useBootstrapFive();
+        // Paginator::defaultView();
+        Relation::enforceMorphMap([
+            'classwork' => Classwork::class,
+            'post' => Post::class,
+        ]);
     }
 }
