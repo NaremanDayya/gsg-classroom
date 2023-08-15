@@ -47,7 +47,7 @@ class ClassworkController extends Controller
     }
 
 
-    /**
+    /**+
      * Show the form for creating a new resource.
      */
     public function create(Request $request, Classroom $classroom)
@@ -156,7 +156,7 @@ class ClassworkController extends Controller
         $classwork = $classroom->classworks()->findOrFail($classwork->id);
         $classwork->delete();
         return redirect(route('calssrooms.index'))
-        ->with('success', "your classroom $classwork->title deleted successfully");
+        ->with('success', "your classwork $classwork->title deleted successfully");
     
     }
 }

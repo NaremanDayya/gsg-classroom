@@ -9,7 +9,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TopicsController;
 use App\Http\Controllers\ClassworkController;
 use App\Http\Controllers\ClassroomPeopleController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentsController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -48,6 +50,8 @@ Route::put('/{classroom}','restore')
 Route::delete('/{classroom}','forceDelete') 
 ->name('force-delete');
 });
+Route::resource('classroom.post', PostController::class);
+
 Route::resource('classroom.classwork', ClassworkController::class);
 // ->shallow();
 //shallow-> بتخلي راوت destroy,update,edit,show بدون ما يمرر كلاس رووم باراميتر
