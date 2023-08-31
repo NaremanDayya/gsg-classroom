@@ -1,4 +1,4 @@
-@include('partials.header')
+<x-main-layout title="Classroom Details">
 
     <div class="container">
     <h1> Classrooms Details: {{ $classroom->name }}  (# {{ $classroom->id}})</h1>
@@ -10,10 +10,10 @@
         </div>
     </div>
     <div class="col-md-9">
-            <p>Invitation Link:<a href="{{ $classroom->invitation_link }}"> {{ $classroom->invitation_link }}</a></p>
+            <p>{{ __('Invitation Link:') }}<a href="{{ $classroom->invitation_link }}"> {{ $classroom->invitation_link }}</a></p>
 
-        <p> <a class="btn btn-outline-dark" href="{{ route('classroom.classwork.index', $classroom->id) }}">classworks</a></p>        
+        <p> <a class="btn btn-outline-dark" href="{{ route('classroom.classwork.index', $classroom->id) }}">{{ __('Classworks') }}</a></p>        
     </div>
 </div>
  </div>
- @include('partials.footer')
+</x-main-layout>

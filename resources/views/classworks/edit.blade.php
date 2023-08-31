@@ -1,5 +1,5 @@
-@include('partials.header')
-<div class="container">
+<x-main-layout title="Edit Classwork">
+    <div class="container">
     <h1> Edit Classwork</h1>
     <form action="{{ route('classroom.classwork.update', ['classroom' => $classroom->id, 'type' => $type,'classwork'=> $classwork->id]) }}"
         method="POST" enctype="multipart/form-data">
@@ -10,8 +10,8 @@
 
 
 
-        <button type="submit" class="btn btn-primary">Edit Classwork</button>
+        <button type="submit" class="btn btn-primary">{{ __('Edit Classwork') }}</button>
     </form>
    
 </div>
-@include('partials.footer')
+</x-main-layout>

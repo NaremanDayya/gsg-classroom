@@ -1,6 +1,6 @@
-@include('partials.header');
-    <div class="container">
-        <h1> create topics</h1>
+<x-main-layout title="Create Topic">
+        <div class="container">
+        <h1>{{ __('Create Topic') }}</h1>
         <form action="{{ route("classroom.topic.store" ,$classroom) }}" method="POST">
             @csrf
             <div class="form-floating mb-3">
@@ -17,7 +17,7 @@
                 </select> --}}
             </div>
            
-            <button type="submit" class="btn btn-primary">Create Topic</button>
+            <button type="submit" class="btn btn-primary">{{ __('Create') }}</button>
         </form>
     </div>
-@include('partials.footer')
+</x-main-layout>

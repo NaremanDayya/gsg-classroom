@@ -1,11 +1,11 @@
-@include('partials.header')
+<x-main-layout title="Create Classroom ">
     <div class="container">
         <h1> create classrooms</h1>
-        <form action="{{ route("calssrooms.store") }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('classrooms.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
-            @include('classrooms._form',[
-                'button_label' => 'Create Classroom'
-            ])
-            </form>
+            @include('classrooms._form', [
+                'button_label' => __('Create')
+                ])
+        </form>
     </div>
-@include('partials.footer')
+</x-main-layout>

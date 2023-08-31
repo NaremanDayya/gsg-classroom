@@ -10,9 +10,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Classwork extends Model
 {
     use HasFactory;
-    const TYPE_ASSAIGNMENT = ClassworkType::ASSAIGNMENT;
-    const TYPE_MATERIAL = ClassworkType::MATERIAL;
-    const TYPE_QUESTION = ClassworkType::QUESTION;
+    const TYPE_ASSAIGNMENT = ClassworkType::ASSAIGNMENT->value;
+    const TYPE_MATERIAL = ClassworkType::MATERIAL->value;
+    const TYPE_QUESTION = ClassworkType::QUESTION->value;
 
     const STATUS_PUBLISHED = 'published';
     const STATUS_DRAFT = 'draft';
@@ -24,7 +24,7 @@ class Classwork extends Model
     protected $casts=[
         'options' => 'json', 
         'published_at' => 'datetime',
-        'type' => ClassworkType::class,
+        // 'type' => ClassworkType::class,
     ];
     public function scopeFilter($query , array $filters)
     {
@@ -46,6 +46,10 @@ class Classwork extends Model
         });
        
     }
+    public function submissions()
+    {
+        return $this->hasMany(Submission::class);
+    }
 
     public function getPublishedDateAttribute()
     {
@@ -60,6 +64,11 @@ class Classwork extends Model
      public function topic() :BelongsTo
     {
         return $this->belongsTo(Topic::class ,'topic_id','id');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+        
     }
     public function users()
     {

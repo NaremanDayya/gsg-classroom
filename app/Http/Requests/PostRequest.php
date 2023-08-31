@@ -23,8 +23,6 @@ class PostRequest extends FormRequest
     {
         return [
             'content' => ['required', 'string', 'max:255'],
-            'user_id' => ['nullable','int', 'exists:users,id'],
-            'classroom_id' => ['required','int', 'exists:classrooms,id'],
         ];
     }
 }

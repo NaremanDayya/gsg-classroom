@@ -15,6 +15,16 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <x-nav-link :href="route('logout')" :active="request()->routeIs('logout')"
+                            onclick="event.preventDefault(); this.closest('form').submit();">
+                            {{ __('Logout') }}
+                        </x-nav-link>
+                    </form>
+                    
+                    {{-- <button href="{{ route('logout') }}">logout</button> --}}
                 </div>
             </div>
 

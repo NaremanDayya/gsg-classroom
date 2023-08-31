@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -56,5 +58,23 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+
+    public function changeLanguage($locale)
+    {
+
+        $supportedLocales = ['en', 'ar'];
+        if (in_array($locale, $supportedLocales)) {
+            // app()->setLocale($locale);
+            // dd(Session::get('locale'));
+            Session::put('locale', $locale);
+           
+            // dd(session());
+            //  dd(App::currentLocale());
+
+        }
+
+        return redirect()->back();
     }
 }

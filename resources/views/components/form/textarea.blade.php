@@ -1,5 +1,5 @@
 @props([
-    'name', 'value' => '',
+    'name', 'value' => '', 'id' => null
     ])
 
     <textarea 

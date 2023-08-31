@@ -31,7 +31,7 @@ class CommentsController extends Controller
             
             return back()->with('success','Comment Added♥');
         } catch (Exception $e) {
-            return back()->with('error','Error adding comment: '.$e->getMessage());
+            return back()->with('error',__('Error adding comment: ').$e->getMessage());
         }
     }
 }

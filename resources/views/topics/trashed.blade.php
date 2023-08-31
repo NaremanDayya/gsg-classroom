@@ -1,12 +1,4 @@
-@extends('layouts.master')
-@section('content')
-@section('title','Trashed Topics')
-@push('styles')
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-@endpush
-{{-- <p> Welcome {{ $name }} , {{ $title  }} </p>
-    <a href="{{ route('topics.show',['edit' => 1 ,'id' => 56], false)}}" >Create</a>
-    <a href="{{ route(name: 'topics.create', absolute:false)}}" >Create</a> --}}
+<x-main-layout title="Trashed Topics">
 <x-form.alert name="success"></x-form.alert>
 {{-- <x-alert name="success" /> --}}
     <div class="row">
@@ -38,11 +30,4 @@
         </div>
     @endforeach
 </div>
-@endsection
-@push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
-{{-- <script>console.log('@@stack')</script>رح يطبع بالكونسول @stack  --}}
-@endpush
-{{-- @pushIf('true','script')
- <script>console.log('@@stack')</script>رح يطبع بالكونسول @stack  
-@endpushIf --}}
+</x-main-layout>

@@ -23,7 +23,7 @@ class ClassroomPeopleController extends Controller
         if ($user_id == $classroom->user_id) {
             return redirect()
             ->route('classrooms.people', $classroom->id)
-            ->with('error', 'cant remove user!');
+            ->with('error', __('cant remove user!'));
         
         }
         // dd($request->input('user_id'));
@@ -31,6 +31,6 @@ class ClassroomPeopleController extends Controller
 
         return redirect()
             ->route('classrooms.people', $classroom->id)
-            ->with('success', 'User removed!');
+            ->with('success', __('User removed!'));
     }
 }

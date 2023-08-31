@@ -18,7 +18,7 @@ class UserClassroomScope implements Scope
     {
         if ($id = Auth::id())
             $builder->where (function(Builder $query) use ($id){
-                   $query->where('user_id', '=', $id)
+                   $query->where('classrooms.user_id', '=', $id)
                 
                 // ->orWhereRaw("بنكتب هنا جملة sql خام");
                 //orwhereRaw("exists(select 1 from classroom_user where classroom_id =classrooms.id and user_id = ?")
@@ -26,8 +26,8 @@ class UserClassroomScope implements Scope
                 ->orWhereExists(function (QueryBuilder $query) use ($id) {
                     $query->select(DB::raw('1'))
                         ->from('classroom_user')
-                        ->whereColumn('classroom_id', 'classrooms.id')
-                        ->where('user_id', $id);
+                        ->whereColumn('classroom_user.classroom_id', 'classrooms.id')
+                        ->where('classroom_user.user_id', $id);
                 });
     });
 }

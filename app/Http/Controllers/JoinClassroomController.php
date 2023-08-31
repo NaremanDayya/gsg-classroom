@@ -50,7 +50,7 @@ class JoinClassroomController extends Controller
     {
         $exists =$classroom->users()->wherePivot('user_id',$user_id)->exists();
         if ($exists) {
-                throw new Exception('User already joined the classroom');
+                throw new Exception(__('User already joined the classroom'));
             }
            
                 

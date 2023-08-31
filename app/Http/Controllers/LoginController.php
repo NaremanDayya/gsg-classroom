@@ -42,7 +42,7 @@ class LoginController extends Controller
         }
 
         return back()->withInput()->withErrors([
-            'email' => 'Invalid Credentails',
+            'email' => __('Invalid Credentails'),
         ]);
     }
 }

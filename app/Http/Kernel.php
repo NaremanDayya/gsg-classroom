@@ -2,6 +2,8 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\LocaleChange;
+use App\Http\Middleware\MarkNotificationAsRead;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -21,6 +23,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        // \App\Http\Middleware\ApplyUserPreferences::class,//هنا بتصير تتطبق تلقائي بدون ما نعرفها حتى 
     ];
 
     /**
@@ -36,12 +39,15 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\ApplyUserPreferences::class,
+            \App\Http\Middleware\LocaleChange::class,
+            \App\Http\Middleware\MarkNotificationAsRead::class,
         ],
 
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
+            \Illuminate\Routing\Middleware\SubstituteBindings::class, 
         ],
     ];
 
@@ -64,5 +70,8 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'user.preferences' => \App\Http\Middleware\ApplyUserPreferences::class,
+        'locale.change' => \App\Http\Middleware\LocaleChange::class,
+
     ];
 }

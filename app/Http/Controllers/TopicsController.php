@@ -41,8 +41,7 @@ class TopicsController extends Controller
         return view('topics.create', [
             'topics' => $topics,
             'classroom' => $classroom,
-        ])
-        ->with('success', 'Topic Created ');
+        ]);
         
     }
 
@@ -64,7 +63,7 @@ class TopicsController extends Controller
         ]);
     }
 
-    public function edit($id)
+    public function edit($classroom_id, $id)
     {
         $topic = Topic::findOrFail($id);
         return view('topics.edit', [
@@ -78,7 +77,7 @@ class TopicsController extends Controller
         $topics = Topic::myClassroom($classroom)->findOrFail($topic);
         $topics->update($request->all());
         return redirect()->route('classroom.topic.index')
-        ->with('success', 'Topic updated');
+        ->with('success', __('Topic updated'));
         
     }
 
@@ -87,7 +86,7 @@ class TopicsController extends Controller
         $topic =Topic::myClassroom($classroom)->get();
         Topic::destroy($topic);
         return redirect(route('classroom.topic.index',['classroom'=>$classroom,'topic'=>$topic]))
-        ->with('success', 'Topic deleted');
+        ->with('success', __('Topic deleted'));
         
 
     }

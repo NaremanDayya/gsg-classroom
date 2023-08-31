@@ -10,9 +10,13 @@ class ClassworkUser extends Pivot
 {
     use HasFactory;
 
-    public function setUpdatedAt($value)
+    public function getUpdatedAtColumn()
     {
-        // $this->{$this->getUpdatedAtColumn()} = $value;// هنا رح يرجع اسم العمود تبع الابديت
-        return $this;
     }
+
+    // public function setUpdatedAt($value)
+    // {
+    //     // $this->{$this->getUpdatedAtColumn()} = $value;// هنا رح يرجع اسم العمود تبع الابديت
+    //     return $this;
+    // }
 }

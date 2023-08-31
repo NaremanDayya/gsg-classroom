@@ -42,4 +42,6 @@
 </x-form.floating-control>
 
 <button type="submit" class="btn btn-primary">{{ $button_label }}</button>
-
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+@endpush

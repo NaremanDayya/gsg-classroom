@@ -21,6 +21,6 @@ class MainLayout extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('layout.main');
+        return view('components.main-layout');
     }
 }

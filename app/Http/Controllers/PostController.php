@@ -36,7 +36,7 @@ class PostController extends Controller
         // ]);
         $post =$classroom->posts()->create($request->all());
         return redirect()->route('classroom.post.index', $classroom->id)
-        ->with('success', "Post Created♥");
+        ->with('success', __("Post Created♥"));
     }
 
     public function show(Classroom $classroom,Post $post)
@@ -55,7 +55,7 @@ class PostController extends Controller
         $validated = $request->validated();
         $post->update($validated);
         return redirect()->route('classroom.post.show',compact('classroom','post'))
-        ->with('success', 'Post Updated♥');
+        ->with('success', __('Post Updated♥'));
     }
 
     public function destroy(Classroom $classroom,Post $post)
@@ -63,7 +63,7 @@ class PostController extends Controller
         $post = $classroom->posts()->findOrFail($post->id);
         $post->delete();
         return redirect(route('calssrooms.index'))
-        ->with('success', "post deleted successfully");
+        ->with('success', __("post deleted successfully"));
     
     }
 }

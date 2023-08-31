@@ -22,6 +22,7 @@ use Illuminate\Support\Str;
 
 class ClassroomsController extends Controller
 {
+    
     // public function index(Request $requset , Test $test)
     public function index(Request $requset): BaseView
     {
@@ -61,7 +62,7 @@ class ClassroomsController extends Controller
         return View()->make('classrooms.create', [
             'classroom' => new Classroom(),
         ])
-            ->with('success', 'Classroom Created successfully');
+            ->with('success', __('Classroom Created successfully'));
         // return view('classrooms.create');
     }
 
@@ -149,7 +150,7 @@ class ClassroomsController extends Controller
 
 
         return redirect()->route('classrooms.index')
-            ->with('success', 'your classroom created successfully');
+            ->with('success', __('your classroom created successfully'));
 
 
         // echo $request->query('name');//رح ترجع القيم من ال url
@@ -263,7 +264,7 @@ class ClassroomsController extends Controller
         // $classroom->save();   
         //mass Assignment
         //   $classroom->fill($request->all())->save();
-        Session::flash('success', 'your classroom updated successfully');
+        Session::flash('success', __('your classroom updated successfully'));
         return Redirect::route('classrooms.index');
     }
 
@@ -276,8 +277,8 @@ class ClassroomsController extends Controller
         //     Classroom::deleteCoverImage($classroom->cover_image_path);
         //     //Flash Message
         // }
-        return redirect(route('calssrooms.index'))
-            ->with('success', 'your classroom deleted successfully');
+        return redirect(route('classrooms.index'))
+            ->with('success', __('your classroom deleted successfully'));
         // Classroom::where('id','=',$id)->delete();
         // $classroom = Classroom::find($id);
         // $classroom->delete();
@@ -298,7 +299,7 @@ class ClassroomsController extends Controller
         // $classroom = Classroom::findOrFail($id);//هان رح يبحث عنه داخل الموجود بس مش عالمحدوف فلازم نحددله وين يبحث
         $classrooms = Classroom::onlyTrashed()->findOrFail($id);
         $classrooms->restore(); //بترجع حقل الحدف ل null
-        return redirect(route('calssrooms.index'))
+        return redirect(route('classrooms.index'))
             ->with('success', 'Classroom ({$classrooms->name}) restored');
     }
 
@@ -309,7 +310,13 @@ class ClassroomsController extends Controller
         // if ($classrooms->cover_image_path) {     // Storage::disk(Classroom::$disk)->delete($classroom->cover_image_path);
         //     Classroom::deleteCoverImage($classrooms->cover_image_path);
         // }
-        return redirect(route('calssrooms.trashed'))
-            ->with('success', 'Classroom ({$classroom->name}) restored');
+        return redirect(route('classrooms.trashed'))
+            ->with('success',  'Classroom ({$classroom->name}) restored');
+    }
+
+    public function streams(Classroom $classroom)
+    {
+        $streams = $classroom->streams()->get();
+        return view('classrooms.stream',compact('streams','classroom'));
     }
 }
