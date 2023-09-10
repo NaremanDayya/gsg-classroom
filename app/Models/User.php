@@ -104,6 +104,10 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
         return $this->HasOne(Profile::class, 'user_id', 'id')
             ->withDefault();
     }
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
 
     public function routeNotificationForMail($notification = null)
     { // بنحط اسم الحقل تبع الايميل اذا كان غير email notificationعشان يعرف وين يبعت ال 
@@ -114,7 +118,7 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
         return '+972594302492' ;
         // return $this->mobile_phone;
     }
-    public function recievesBroadcastNotificationsOn()
+    public function receivesBroadcastNotificationsOn()
     {
         return 'Notifications.' . $this->id;
     }

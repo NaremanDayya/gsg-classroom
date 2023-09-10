@@ -21,7 +21,8 @@ class ClassroomRequest extends FormRequest
      */
     public function rules(): array
     {
-        
+        $id = $this->route('classroom', 0);//اذا ما في ياخد الزيرو يعني كانه ولا اشي لانه ما عنا 0
+        // $id = $this->input('classroom');
         return [
             'name' => ['required','string','max:255', function($attribute,$value ,$fail){
                  if ($value == 'admin'){
@@ -30,8 +31,7 @@ class ClassroomRequest extends FormRequest
             }],
             'section' => 'nullable|string|max:255',
             'subject' => 'nullable|string|max:255',
-            'room' => 'nullable|string|max:255',
-            'cover_image' => [
+            'room' => "nullable|string|max:255|unique:classrooms,room,$id",            'cover_image' => [
                 'image',
                 'dimensions:min_width:200,min_height=100,max_width:4000 ,max_height=4000',
             ],

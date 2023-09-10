@@ -14,7 +14,7 @@ Echo.private('classroom.' + classroomId)
     alert(event.title);
 });
 }
-Echo.private('Notifications.'+ userId)
+Echo.private('Notifications.' + userId)
 .notification(function (event){
     alert(event.body);
 });

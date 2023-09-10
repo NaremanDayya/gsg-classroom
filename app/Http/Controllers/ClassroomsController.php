@@ -22,7 +22,10 @@ use Illuminate\Support\Str;
 
 class ClassroomsController extends Controller
 {
-    
+    public function __construct()
+    {
+        $this->middleware('subscribed')->only('create','store');
+    }
     // public function index(Request $requset , Test $test)
     public function index(Request $requset): BaseView
     {

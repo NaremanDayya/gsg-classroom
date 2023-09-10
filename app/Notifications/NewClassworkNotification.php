@@ -82,7 +82,7 @@ class NewClassworkNotification extends Notification
     }
     public function toBroadcast(object $notifiable): BroadcastMessage
     {
-        return new BroadcastMessage([$this->createMessage()]);
+        return new BroadcastMessage($this->createMessage());
 
     } 
 

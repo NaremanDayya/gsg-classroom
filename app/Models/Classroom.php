@@ -28,6 +28,14 @@ class Classroom extends Model
         '_Token', 'theme', 'cover_image_path', 'code',
     ];
 
+    protected $appends = [
+        'cover_image_url',
+    ];
+    protected $hidden = [
+        'cover_image_path',
+        'deleted_at'
+    ];
+
     public function scopeFilter(Builder $query, array $filters)
     {
         if ($filters['search'] ?? false) {
@@ -77,14 +85,18 @@ class Classroom extends Model
         // });
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
     public function classworks(): HasMany
     {
         return $this->hasMany(Classwork::class, 'classroom_id', 'id');
     }
-    
+
     public function posts(): HasMany
     {
-        return $this->hasMany(Post::class,'classroom_id','id');
+        return $this->hasMany(Post::class, 'classroom_id', 'id');
     }
 
     public function topics(): HasMany
@@ -117,7 +129,7 @@ class Classroom extends Model
     public function streams()
     {
         return $this->hasMany(Stream::class)
-        ->latest();
+            ->latest();
     }
 
     public function getRouteKeyName()

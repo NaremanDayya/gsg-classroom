@@ -34,4 +34,10 @@ return [
         'key' => env('HADARA_key'),
     ],
 
+    'api_key' => env('API_KEY'),
+
+    'stripe' =>  [
+        'publishable_key' => env('STRIPE_PUBLISHABLE_KEY'),
+        'secret_key' => env('STRIPE_SECRET_KEY'),
+    ]
 ];

@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
+use App\Http\Resources\ClassroomResource;
 use App\Models\Classwork;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +32,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // JsonResource::withoutWrapping();
+        // ClassroomResource::withoutWrapping();
+        // ResourceCollection::withoutWrapping();
         //ما رح يتنفذوا لانه السايكل للارافيل ما بتروح ع session و بتبداه فما حيقدر يحدد اليوزر اذا ،فبنعرفه بiddleware 
         // $user = Auth::user();
         // App::setLocale($user->profile->locale);

@@ -2,6 +2,8 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\checkApiKey;
+use App\Http\Middleware\EnsureUserHasActiveSubscription;
 use App\Http\Middleware\LocaleChange;
 use App\Http\Middleware\MarkNotificationAsRead;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -45,9 +47,10 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+           \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class, 
+            \App\Http\Middleware\checkApiKey::class,
         ],
     ];
 
@@ -72,6 +75,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'user.preferences' => \App\Http\Middleware\ApplyUserPreferences::class,
         'locale.change' => \App\Http\Middleware\LocaleChange::class,
+        'subscribed' => \App\Http\Middleware\EnsureUserHasActiveSubscription::class,
 
     ];
 }
