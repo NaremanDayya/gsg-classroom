@@ -36,7 +36,7 @@ class ClassroomMessagesController extends Controller
             'body' => $request->post('body'),
         ]);
 
-        event(new MessageSent($message));
+        MessageSent::broadcast($message)->toOthers();
         return $message;
     }
 

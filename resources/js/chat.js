@@ -72,7 +72,7 @@ import './bootstrap';
         .leaving((user) => {
             $(`li#user-${user.id}`).remove()
         })
-    .listen('.new-message', function (event) {
+    .listen('.new-message', function (event) { 
         addMessage(event)
     })
     .listenForWhisper('start-typing', (event) => {
