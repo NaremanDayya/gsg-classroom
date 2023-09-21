@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Http\Resources\ClassroomResource;
+use App\Models\Classroom;
 use App\Models\Classwork;
 use App\Models\Post;
 use App\Models\User;
@@ -22,6 +23,9 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         //
+        // $this->app->bind(Filesystem::class, function () {
+        //     return new \Illuminate\Filesystem\Filesystem(new \League\Flysystem\Adapter\Local(__DIR__ . '/../public_html'));
+        // }); 
         // $this->app->bind('x',function(){
         //     return new \App\Services\x();
         // });
@@ -43,6 +47,7 @@ class AppServiceProvider extends ServiceProvider
         // Paginator::defaultView();
         Relation::enforceMorphMap([
             'classwork' => Classwork::class,
+            'classroom' => Classroom::class,
             'post' => Post::class,
             'user' => User::class,
         ]);

@@ -11,6 +11,13 @@ use Illuminate\Notifications\Messages\DatabaseMessage;
 use Illuminate\Notifications\Messages\VonageMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\Fcm\FcmChannel;
+use NotificationChannels\Fcm\FcmMessage;
+use NotificationChannels\Fcm\Resources\AndroidConfig;
+use NotificationChannels\Fcm\Resources\AndroidFcmOptions;
+use NotificationChannels\Fcm\Resources\AndroidNotification;
+use NotificationChannels\Fcm\Resources\ApnsConfig;
+use NotificationChannels\Fcm\Resources\ApnsFcmOptions;
 
 class NewClassworkNotification extends Notification
 {
@@ -43,9 +50,10 @@ class NewClassworkNotification extends Notification
         // }
         return [
             'database',
+            FcmChannel::class,
             // HadaraSmsChannel::class,
-             'broadcast',
-              'mail',
+            //  'broadcast',
+            //   'mail',
         ];
     }
 
@@ -74,7 +82,31 @@ class NewClassworkNotification extends Notification
             ]))
             ->line('Thank you for using our application!');
     }
-
+    public function toFcm($notifiable)
+    {
+        $classwork=$this->classwork;
+        $content = __(':name posted a new :type: :title', [
+            'name' => $classwork->user->name,
+            'type' => $classwork->type,
+            'title' => $classwork->title,
+        ]);
+        return FcmMessage::create()
+            ->setData([
+             'classwork_id' => $classwork->id,
+             'user_id' => $classwork->user_id,
+             ])
+            ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
+                ->setTitle('New Classwork')
+                ->setBody($content)
+                ->setImage('http://example.com/url-to-image-here.png'))
+            ->setAndroid(
+                AndroidConfig::create()
+                    ->setFcmOptions(AndroidFcmOptions::create()->setAnalyticsLabel('analytics'))
+                    ->setNotification(AndroidNotification::create()->setColor('#0A0A0A'))
+            )->setApns(
+                ApnsConfig::create()
+                    ->setFcmOptions(ApnsFcmOptions::create()->setAnalyticsLabel('analytics_ios')));
+    }
     public function toDatabase(object $notifiable): DatabaseMessage
     {
         //بدنا نتعامل مع ستركتشر ثابت 

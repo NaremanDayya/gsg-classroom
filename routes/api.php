@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\ClassroomMessagesController;
+use App\Http\Controllers\Api\DevicesController;
 use App\Http\Controllers\Api\V1\AccessTokensController;
 use App\Http\Controllers\Api\V1\ClassroomsController;
 use App\Http\Controllers\Api\V1\ClassworksController;
@@ -21,6 +23,8 @@ Route::middleware('auth:sanctum')->group(function ()
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
+    Route::post('devices',[DevicesController::class,'store']);
+    Route::apiResource('classrooms.messages',ClassroomMessagesController::class);
     Route::apiResource('/classrooms', ClassroomsController::class);
     Route::apiResource('classrooms.classworks', ClassworksController::class);
     Route::get('auth/access-tokens',[AccessTokensController::class, 'index']);

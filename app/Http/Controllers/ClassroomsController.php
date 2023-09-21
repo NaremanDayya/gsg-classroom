@@ -322,4 +322,11 @@ class ClassroomsController extends Controller
         $streams = $classroom->streams()->get();
         return view('classrooms.stream',compact('streams','classroom'));
     }
+
+    public function chat(Classroom $classroom)
+    {
+        return view('classrooms.chat',[
+            'classroom' => $classroom,
+        ]);
+    }
 }

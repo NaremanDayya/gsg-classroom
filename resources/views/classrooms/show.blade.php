@@ -12,8 +12,9 @@
     <div class="col-md-9">
             <p>{{ __('Invitation Link:') }}<a href="{{ $classroom->invitation_link }}"> {{ $classroom->invitation_link }}</a></p>
 
-        <p> <a class="btn btn-outline-dark" href="{{ route('classroom.classwork.index', $classroom->id) }}">{{ __('Classworks') }}</a></p>        
-    </div>
+            <p> <a class="btn btn-outline-dark" href="{{ route('classroom.classwork.index', $classroom->id) }}">{{ __('Classworks') }}</a></p>        
+            <p> <a class="btn btn-outline-dark" href="{{ route('classrooms.chat', $classroom->id) }}">{{ __('Chat') }}</a></p>        
+        </div>
 </div>
  </div>
 </x-main-layout>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Stripe\CreatePaymentIntent;
 use App\Models\Subscription;
 use App\Services\Payments\StripePayment;
 use Error;
@@ -17,23 +18,12 @@ class paymentsController extends Controller
         return $stripe->createCheckoutSession($subscription);
     }
 
-    public function store(Request $request, Subscription $subscription)
+    public function store(Request $request,StripeClient $stripe,Subscription $subscription,CreatePaymentIntent $intent)
     {
 
         $subscription = Subscription::findOrFail($request->id);
-        $stripe = new StripeClient(config('services.stripe.secret_key'));
-
         try {
-            // Create a PaymentIntent with amount and currency
-            $paymentIntent = $stripe->paymentIntents->create([
-                'amount' => $subscription->price * 100,
-                'currency' => 'usd',
-                // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
-                'automatic_payment_methods' => [
-                    'enabled' => true,
-                ],
-            ]);
-
+            $paymentIntent = $intent->paymentIntent($stripe, $subscription);
             return [
                 'clientSecret' => $paymentIntent->client_secret,
             ];

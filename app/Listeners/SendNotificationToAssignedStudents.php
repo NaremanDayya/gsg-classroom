@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\ClassworkCreated;
+use App\Jobs\SendClassroomNotification;
 use App\Models\User;
 use App\Notifications\NewClassworkNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -33,9 +34,16 @@ class SendNotificationToAssignedStudents
         // {
         //     $user->notify(new NewClassworkNotification($event->classwork));
         // }
-        
+        //عشان نستدعي job 
+        $classwork = $event->classwork;
+        $job= dispatch(new SendClassroomNotification($classwork->users,
+         new NewClassworkNotification($classwork)
+        ));
+        $job->onQueue('notifications')->onConnection('database');
+        // dispatch($job)->onQueue('notifications');
+        // SendClassroomNotification::dispatch($classwork ->users, new NewClassworkNotification($classwork));
         //باستخدام ال notification facade     
-        Notification::send($event->classwork->users , new NewClassworkNotification($event->classwork));
+        // Notification::send($classwork->users , new NewClassworkNotification($classwork));
 
     }
 }

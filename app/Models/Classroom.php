@@ -132,6 +132,11 @@ class Classroom extends Model
             ->latest();
     }
 
+    public function messages()
+    {
+        return $this->morphMany(Message::class,'recipient');
+    }
+
     public function getRouteKeyName()
     {
         return 'id';

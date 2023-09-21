@@ -1,6 +1,7 @@
 
 <?php
 
+use App\Http\Controllers\Admin\TwoFactorAuthenticationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClassroomsController;
 use App\Http\Controllers\JoinClassroomController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\ClassworkController;
 use App\Http\Controllers\ClassroomPeopleController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentsController;
+use App\Http\Controllers\MyFatoorahController;
 use App\Http\Controllers\paymentsController;
 use App\Http\Controllers\PlansController;
 use App\Http\Controllers\SubmissionController;
@@ -31,6 +33,8 @@ use App\Http\Controllers\Webhooks\StripeController;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/admin/2fa', [TwoFactorAuthenticationController::class, 'create']);
 Route::prefix('classroom/{classroom}/topics/trashed')
     ->as('topics.')
     ->controller(TopicsController::class)
@@ -56,6 +60,8 @@ Route::middleware(['auth', 'user.preferences',])->group(function () {
             Route::delete('/{classroom}', 'forceDelete')
                 ->name('force-delete');
         });
+    Route::get('/classrooms/{classroom}/chat', [ClassroomsController::class, 'chat'])
+        ->name('classrooms.chat');
     Route::get('classroom/{classroom}/streams', [ClassroomsController::class, 'streams'])
         ->name('classroom.streams');
     Route::resource('classroom.post', PostController::class);
@@ -66,8 +72,9 @@ Route::middleware(['auth', 'user.preferences',])->group(function () {
     Route::get('/classrooms/{classroom}/join', [JoinClassroomController::class, 'create'])
         ->middleware('signed')
         ->name('classrooms.join');
-
     Route::post('/classrooms/{classroom}/join', [JoinClassroomController::class, 'store']);
+    Route::get('/classrooms/{classroom}/chat', [ClassroomsController::class, 'chat'])
+        ->name('classrooms.chat');
     Route::get('/classrooms/{classroom}/people', [ClassroomPeopleController::class, 'index'])
         ->name('classrooms.people'); //invokable Controller
     Route::delete('/classrooms/{classroom}/people', [ClassroomPeopleController::class, 'destroy'])
@@ -104,11 +111,8 @@ Route::middleware(['auth', 'user.preferences',])->group(function () {
         ->middleware('can:submission.create,classwork'); //with model binding
 
     Route::resource('classroom.topic', TopicsController::class);
-   
-    
-
 });
- Route::post('/subscriptions',[SubscriptionsController::class,'store'])
+Route::post('/subscriptions', [SubscriptionsController::class, 'store'])
     ->name('subscriptions.store')->middleware('auth');
 Route::get('/', function () {
     return view('welcome');
@@ -120,19 +124,18 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('plans',[PlansController::class,'index'])
-->name('plans');
+Route::get('plans', [PlansController::class, 'index'])
+    ->name('plans');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::post('/payments',[paymentsController::class,'store'])->name('payments.store');
-    Route::get('subscriptions/{subscription}/pay',[paymentsController::class,'create'])->name('checkout');
-    Route::get('payments/{subscription}/success',[paymentsController::class,'success'])->name('payments.success');
-    Route::get('payments/{subscription}/cancel',[paymentsController::class,'cancel'])->name('payments.cancel');
-
+    Route::post('/payments', [paymentsController::class, 'store'])->name('payments.store');
+    Route::get('subscriptions/{subscription}/pay', [paymentsController::class, 'create'])->name('checkout');
+    Route::get('payments/{subscription}/success', [paymentsController::class, 'success'])->name('payments.success');
+    Route::get('payments/{subscription}/cancel', [paymentsController::class, 'cancel'])->name('payments.cancel');
+    Route::get('/callback', [MyFatoorahController::class, 'callback'])->name('myfatoorah.callback');
 });
-Route::post('/payments/stripe/webhook',StripeController::class);
- 
-require __DIR__ . '/auth.php';
+Route::post('/payments/stripe/webhook', StripeController::class);
+//require __DIR__ . '/auth.php';

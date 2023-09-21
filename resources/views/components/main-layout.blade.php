@@ -6,11 +6,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title ?? config('app.name') }}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
     @if (App::currentLocale() == 'ar')
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.rtl.min.css" integrity="sha384-gXt9imSW0VcJVHezoNQsP+TNrjYXoGcrqBZJpry9zJt8PCQjobwmhMGaDHTASo9N" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.rtl.min.css"
+            integrity="sha384-gXt9imSW0VcJVHezoNQsP+TNrjYXoGcrqBZJpry9zJt8PCQjobwmhMGaDHTASo9N" crossorigin="anonymous">
     @endif
     @stack('styles')
 </head>
@@ -45,6 +47,20 @@
                         <li class="nav-item">
                             <a class="nav-link disabled">Disabled</a>
                         </li>
+                        {{-- <li>
+                             @if (!Auth::guard('admin')->user()->two_factor_secret)
+                                <form action="{{ route('two-factor.enable') }}" method="POST">
+                                    @csrf
+                                    <button class="btn btn-primary">Enable 2FA</button>
+                                </form>
+                            @else
+                                <form action="{{ route('two-factor.disable') }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-primary">Disable 2FA</button>
+                                </form>
+                            @endif 
+                        </li> --}}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                                 aria-expanded="false">
@@ -53,7 +69,7 @@
                             <ul class="dropdown-menu">
                                 <a class="dropdown-item" href="{{ route('changeLanguage', 'en') }}">English</a>
                                 <a class="dropdown-item" href="{{ route('changeLanguage', 'ar') }}">العربية</a>
-    
+
                             </ul>
                         </li>
                         <x-user-notifications-menu count="5" />
@@ -101,14 +117,15 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-     integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous">
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
         var classroomId;
         const userId = "{{ Auth::id() }}";
-          </script>
-     @stack('scripts')
+    </script>
+    @stack('scripts')
     @vite(['resources/js/app.js'])
 </body>
 
 </html>
-
